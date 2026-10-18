@@ -16,7 +16,9 @@ export const metadata = {
   title: "ByteMarket - Componentes y PCs",
   description:
     "Tienda en línea de hardware y asistente inteligente de compatibilidad para armar PCs.",
-  manifest: "/manifest.json",
+};
+
+export const viewport = {
   themeColor: "#047857",
 };
 

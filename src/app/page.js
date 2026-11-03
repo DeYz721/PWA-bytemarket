@@ -1,105 +1,172 @@
+
 import Link from "next/link";
+import {
+  Cpu, Monitor, MemoryStick, HardDrive,
+  Zap, PcCase, ArrowRight, ShoppingCart
+} from "lucide-react";
 
 const categorias = [
-  { nombre: "Procesadores", emoji: "🧠", href: "/catalogo?cat=procesadores" },
-  { nombre: "Tarjetas Gráficas", emoji: "🎮", href: "/catalogo?cat=gpu" },
-  { nombre: "Memorias RAM", emoji: "💾", href: "/catalogo?cat=ram" },
-  { nombre: "Almacenamiento", emoji: "💿", href: "/catalogo?cat=almacenamiento" },
-  { nombre: "Fuentes de Poder", emoji: "⚡", href: "/catalogo?cat=fuentes" },
-  { nombre: "Gabinetes", emoji: "🖥️", href: "/catalogo?cat=gabinetes" },
+  { nombre: "Procesadores", icono: Cpu, href: "procesadores" },
+  { nombre: "Tarjetas Gráficas", icono: Monitor, href: "gpu" },
+  { nombre: "Memorias RAM", icono: MemoryStick, href: "ram" },
+  { nombre: "Almacenamiento", icono: HardDrive, href: "almacenamiento" },
+  { nombre: "Fuentes de Poder", icono: Zap, href: "fuentes" },
+  { nombre: "Gabinetes", icono: PcCase, href: "gabinetes" },
 ];
 
-const productosDestacados = [
-  { id: 1, nombre: "RTX 4070 Super", precio: "$9,499", categoria: "GPU", img: "🎮" },
-  { id: 2, nombre: "Ryzen 7 7800X3D", precio: "$6,299", categoria: "CPU", img: "🧠" },
-  { id: 3, nombre: "Kingston Fury 32GB", precio: "$1,899", categoria: "RAM", img: "💾" },
-  { id: 4, nombre: "Samsung 990 Pro 2TB", precio: "$3,199", categoria: "SSD", img: "💿" },
+const productos = [
+  { id: 1, nombre: "RTX 4070 Super", precio: "$9,499", icono: Monitor },
+  { id: 2, nombre: "Ryzen 7 7800X3D", precio: "$6,299", icono: Cpu },
+  { id: 3, nombre: "Kingston Fury 32GB", precio: "$1,899", icono: MemoryStick },
+  { id: 4, nombre: "Samsung 990 Pro 2TB", precio: "$3,199", icono: HardDrive },
 ];
 
 export default function HomePage() {
   return (
-    <div>
-      {/* ── Hero ── */}
-      <section className="bg-gradient-to-br from-emerald-700 to-emerald-900 text-white">
-        <div className="mx-auto max-w-7xl px-4 py-20 text-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4">
-            Arma tu PC ideal con <span className="text-emerald-300">ByteMarket</span>
-          </h1>
-          <p className="mx-auto max-w-2xl text-lg text-emerald-100 mb-8">
-            Componentes de calidad, precios competitivos y un asistente inteligente que verifica la compatibilidad de tus piezas en tiempo real.
+    <div className="bg-black text-white">
+
+      {/* bannerr */}
+      <section
+        className="relative bg-cover bg-center px-6 py-24 text-center"
+        style={{ backgroundImage: "url('/banner_pag1.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/80 via-emerald-900/50 to-emerald-950/20" />
+
+        <div className="relative z-10">
+          <p className="text-sm font-medium tracking-widest text-emerald-300">
+            BIENVENIDO A BYTEMARKET
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-bold sm:text-5xl">
+            Construye la PC que siempre imaginaste
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-xl text-gray-200">
+            Encuentra componentes de calidad y arma tu equipo
+            con ayuda de nuestro configurador inteligente.
+          </p>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/catalogo"
-              className="rounded-full bg-white text-emerald-800 px-8 py-3 font-semibold hover:bg-emerald-50 transition-colors"
-            >
-              Ver Catálogo
+              className="rounded-lg bg-white px-6 py-3 font-semibold text-emerald-900 hover:bg-gray-100">
+              Ver catálogo
             </Link>
+
             <Link
               href="/configurador"
-              className="rounded-full border-2 border-white px-8 py-3 font-semibold hover:bg-white/10 transition-colors"
-            >
-              Configurador de PC
+              className="rounded-lg border border-white px-6 py-3 font-semibold hover:bg-white/10">
+              Armar mi PC
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Categorías ── */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <h2 className="text-2xl font-bold text-center mb-8">Categorías</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categorias.map((cat) => (
-            <Link
-              key={cat.nombre}
-              href={cat.href}
-              className="flex flex-col items-center gap-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md hover:border-emerald-400 transition-all"
-            >
-              <span className="text-4xl">{cat.emoji}</span>
-              <span className="text-sm font-medium text-gray-700">{cat.nombre}</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* Categorías */}
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <h2 className="mb-10 text-center text-3xl font-bold sm:text-4xl">
+          Explora por categoría
+        </h2>
 
-      {/* ── Productos Destacados ── */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-16">
-          <h2 className="text-2xl font-bold text-center mb-8">Productos Destacados</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {productosDestacados.map((prod) => (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {categorias.map((cat) => {
+            const Icono = cat.icono;
+            return (
               <Link
-                key={prod.id}
-                href={`/producto?id=${prod.id}`}
-                className="group rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-emerald-400 transition-all"
+                key={cat.nombre}
+                href={`/catalogo?cat=${cat.href}`}
+                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition hover:-translate-y-1 hover:border-emerald-500 hover:shadow-lg"
               >
-                <div className="flex items-center justify-center h-32 bg-gray-50 rounded-lg text-5xl mb-4 group-hover:bg-emerald-50 transition-colors">
-                  {prod.img}
-                </div>
-                <span className="text-xs font-medium text-emerald-600 uppercase">{prod.categoria}</span>
-                <h3 className="font-semibold text-gray-900 mt-1">{prod.nombre}</h3>
-                <p className="text-lg font-bold text-emerald-700 mt-2">{prod.precio}</p>
+                <Icono
+                  size={32}
+                  strokeWidth={1.5}
+                  className="mx-auto mb-4 text-emerald-400"
+                />
+                <p className="text-sm font-semibold">
+                  {cat.nombre}
+                </p>
               </Link>
-            ))}
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Productos destacados */}
+      <section className="bg-zinc-950 px-6 py-16">
+        <div className="mx-auto max-w-7xl">
+          <h2 className="mb-10 text-center text-3xl font-bold sm:text-4xl">
+            Productos destacados
+          </h2>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {productos.map((prod) => {
+              const Icono = prod.icono;
+              return (
+                <Link
+                  key={prod.id}
+                  href={`/producto?id=${prod.id}`}
+                  className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-emerald-500 hover:shadow-lg"
+                >
+                  <div className="flex h-40 items-center justify-center bg-zinc-800">
+                    <Icono
+                      size={65}
+                      strokeWidth={1}
+                      className="text-emerald-400 transition group-hover:scale-110"
+                    />
+                  </div>
+
+                  <div className="p-5">
+                    <h3 className="font-semibold">{prod.nombre}</h3>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-xl font-bold text-emerald-400">
+                        {prod.precio}
+                      </span>
+                      <ShoppingCart size={19} className="text-gray-400" />
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link
+              href="/catalogo"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300"
+            >
+              Ver todos los productos <ArrowRight size={17} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── Banner Configurador ── */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-8 sm:p-12 text-white text-center">
-          <h2 className="text-3xl font-bold mb-3">¿No sabes qué componentes elegir?</h2>
-          <p className="text-emerald-100 mb-6 max-w-xl mx-auto">
-            Usa nuestro configurador inteligente. Selecciona las piezas y nosotros verificamos que sean 100% compatibles.
+      {/* Configurador */}
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <div className="rounded-2xl bg-gradient-to-r from-emerald-900 to-emerald-700 px-8 py-12 text-center">
+          <Cpu
+            size={36}
+            strokeWidth={1.5}
+            className="mx-auto mb-4 text-emerald-300"
+          />
+
+          <h2 className="text-2xl font-bold sm:text-3xl">
+            ¿No sabes qué componentes elegir?
+          </h2>
+
+          <p className="mx-auto my-4 max-w-xl text-emerald-100">
+            Utiliza nuestro configurador para elegir las piezas
+            y verificar su compatibilidad.
           </p>
+
           <Link
             href="/configurador"
-            className="inline-block rounded-full bg-white text-emerald-800 px-8 py-3 font-semibold hover:bg-emerald-50 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-semibold text-emerald-900 hover:bg-gray-100"
           >
-            Ir al Configurador
+            Ir al configurador <ArrowRight size={18} />
           </Link>
         </div>
       </section>
+
     </div>
   );
 }

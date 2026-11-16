@@ -1,5 +1,8 @@
+
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
+import { ShoppingCart, UserRound, ShieldCheck } from "lucide-react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,7 +22,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#047857",
+  themeColor: "#2ba25b81",
 };
 
 export default function RootLayout({ children }) {
@@ -29,13 +32,26 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
-        {/* ── Navbar ── */}
+
+        {/* Navbar */}
         <header className="sticky top-0 z-50 bg-emerald-700 text-white shadow-md">
           <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-            <Link href="/" className="text-xl font-bold tracking-tight">
-              🖥️ ByteMarket
+
+            {/* Logo y nombre */}
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src="/logo_b.png"
+                alt="Logo ByteMarket"
+                width={60}
+                height={60}
+                className="object-contain"
+              />
+              <span className="text-xl font-bold tracking-tight">
+                ByteMarket
+              </span>
             </Link>
 
+            {/* Navegación de escritorio */}
             <ul className="hidden md:flex items-center gap-6 text-sm font-medium">
               <li>
                 <Link href="/catalogo" className="hover:text-emerald-200 transition-colors">
@@ -59,35 +75,41 @@ export default function RootLayout({ children }) {
               </li>
             </ul>
 
-            <div className="flex items-center gap-4">
+            {/* Íconos de usuario */}
+            <div className="flex items-center gap-5">
+
               <Link
                 href="/carrito"
                 className="relative hover:text-emerald-200 transition-colors"
                 aria-label="Carrito"
               >
-                🛒
+                <ShoppingCart size={21} strokeWidth={1.8} />
                 <span className="absolute -top-2 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold">
                   0
                 </span>
               </Link>
+
               <Link
                 href="/perfil"
                 className="hover:text-emerald-200 transition-colors"
                 aria-label="Perfil"
               >
-                👤
+                <UserRound size={21} strokeWidth={1.8} />
               </Link>
+
               <Link
                 href="/admin"
-                className="hidden md:inline-block rounded bg-emerald-900 px-3 py-1 text-xs font-semibold hover:bg-emerald-800 transition-colors"
+                className="hidden md:flex items-center gap-2 rounded-md bg-emerald-900 px-3 py-2 text-xs font-semibold hover:bg-emerald-800 transition-colors"
               >
+                <ShieldCheck size={16} strokeWidth={1.8} />
                 Admin
               </Link>
+
             </div>
           </nav>
 
-          {/* ── Menú móvil simplificado ── */}
-          <div className="flex md:hidden justify-around border-t border-emerald-600 py-2 text-xs font-medium">
+          {/* Menú móvil */}
+          <div className="flex md:hidden justify-around border-t border-emerald-600 py-3 text-xs font-medium">
             <Link href="/catalogo" className="hover:text-emerald-200">Catálogo</Link>
             <Link href="/configurador" className="hover:text-emerald-200">Configurador</Link>
             <Link href="/ofertas" className="hover:text-emerald-200">Ofertas</Link>
@@ -96,16 +118,18 @@ export default function RootLayout({ children }) {
           </div>
         </header>
 
-        {/* ── Contenido principal ── */}
+        {/* Contenido principal */}
         <main className="flex-1">{children}</main>
 
-        {/* ── Footer ── */}
+        {/* Footer */}
         <footer className="bg-gray-900 text-gray-400 text-sm">
           <div className="mx-auto max-w-7xl px-4 py-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+
             <div>
               <h3 className="text-white font-semibold mb-2">ByteMarket</h3>
               <p>Tu tienda de componentes y PCs con asistente de compatibilidad.</p>
             </div>
+
             <div>
               <h3 className="text-white font-semibold mb-2">Enlaces</h3>
               <ul className="space-y-1">
@@ -115,6 +139,7 @@ export default function RootLayout({ children }) {
                 <li><Link href="/guias" className="hover:text-white">Guías</Link></li>
               </ul>
             </div>
+
             <div>
               <h3 className="text-white font-semibold mb-2">Mi cuenta</h3>
               <ul className="space-y-1">
@@ -122,11 +147,14 @@ export default function RootLayout({ children }) {
                 <li><Link href="/carrito" className="hover:text-white">Carrito</Link></li>
               </ul>
             </div>
+
           </div>
+
           <div className="border-t border-gray-800 text-center py-4 text-xs">
-            © 2026 ByteMarket. Todos los derechos reservados.
+            © 2026 ByteMarket.
           </div>
         </footer>
+
       </body>
     </html>
   );

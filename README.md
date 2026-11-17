@@ -22,7 +22,27 @@ npm run dev
 
 Abrir http://localhost:3000
 
-## Estructura
+## Conexión con Supabase
+
+Instala las dependencias con `npm install`, copia `.env.example` a `.env.local`
+y completa la URL y la clave publicable desde el panel Connect de Supabase.
+Para desplegar, configura esas mismas variables en el servicio de hosting.
+
+Los clientes están en `src/lib/supabase/client.js` (navegador) y
+`src/lib/supabase/server.js` (servidor). `src/proxy.js` renueva las sesiones
+con cookies en Next.js 16. El archivo `.env.local` queda excluido de Git.
+
+Ejemplo en un Server Component:
+
+```js
+import { createClient } from '@/lib/supabase/server';
+
+const supabase = await createClient();
+const { data, error } = await supabase.from('productos').select('id, nombre, precio');
+if (error) throw error;
+```
+
+## Carpetas
 
 ```
 public/

@@ -22,11 +22,18 @@ npm run dev
 
 Abrir http://localhost:3000
 
+Requisito: Node.js 20.9 o superior. No hace falta configurar nada más: la
+conexión a la base de datos ya viene incluida en el archivo `.env`.
+
 ## Conexión con Supabase
 
-Instala las dependencias con `npm install`, copia `.env.example` a `.env.local`
-y completa la URL y la clave publicable desde el panel Connect de Supabase.
-Para desplegar, configura esas mismas variables en el servicio de hosting.
+La URL del proyecto y la clave **publicable** están en `.env`, que sí se sube
+al repositorio. Esa clave está pensada para usarse en el navegador; la
+seguridad de los datos la dan las reglas RLS de cada tabla en Supabase.
+Nunca se suben la clave secret / service_role ni la contraseña de la base de datos.
+
+Si quieres usar otro proyecto de Supabase en tu computadora, crea `.env.local`
+(a partir de `.env.example`); tiene prioridad sobre `.env` y no se sube a Git.
 
 Los clientes están en `src/lib/supabase/client.js` (navegador) y
 `src/lib/supabase/server.js` (servidor). `src/proxy.js` renueva las sesiones

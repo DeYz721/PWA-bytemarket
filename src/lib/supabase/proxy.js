@@ -22,6 +22,17 @@ export async function updateSession(request) {
     },
   );
 
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+
+  // El panel de administración exige sesión: sin ella, se manda al login.
+  // (Que la cuenta sea de administrador se revisa dentro del panel.)
+  const { pathname } = request.nextUrl;
+  if (!data?.claims && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    const url = request.nextUrl.clone();
+    url.pathname = '/admin/login';
+    url.search = '';
+    return NextResponse.redirect(url);
+  }
+
   return response;
 }

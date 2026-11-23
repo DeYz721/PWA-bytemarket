@@ -106,7 +106,16 @@ export async function guardarCategoria(estadoPrevio, fd) {
 
 export async function borrarCategoria(estadoPrevio, fd) {
   const { supabase } = await requireAdmin();
-  const { error } = await supabase.from("categorias").delete().eq("id", texto(fd, "id"));
+  const id = texto(fd, "id");
+
+  // Si se borra una categoría con productos, la base de datos los deja sin categoría
+  // y desaparecen del catálogo. Por eso no se permite.
+  const { count } = await supabase.from("productos").select("*", { count: "exact", head: true }).eq("id_categoria", id);
+  if (count > 0) {
+    return { error: `No se puede borrar: tiene ${count} producto(s). Cámbialos de categoría o desactiva la categoría.` };
+  }
+
+  const { error } = await supabase.from("categorias").delete().eq("id", id);
   if (error) return { error: mensajeError(error) };
   refrescarSitio();
   return null;

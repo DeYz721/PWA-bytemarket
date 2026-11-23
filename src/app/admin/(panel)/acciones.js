@@ -47,11 +47,11 @@ export async function guardarProducto(estadoPrevio, fd) {
   const producto = {
     nombre: texto(fd, "nombre"),
     id_categoria: texto(fd, "id_categoria"),
-    descripcion: textoOpcional(fd, "descripcion"),
+    descripcion: texto(fd, "descripcion"),
     precio: numeroOpcional(fd, "precio"),
     precio_anterior: numeroOpcional(fd, "precio_anterior"),
     existencias: numeroOpcional(fd, "existencias") ?? 0,
-    emoji: textoOpcional(fd, "emoji"),
+    emoji: texto(fd, "emoji"),
     url_imagen: textoOpcional(fd, "url_imagen"),
     especificaciones: leerEspecificaciones(texto(fd, "especificaciones")),
     destacado: casilla(fd, "destacado"),
@@ -91,7 +91,7 @@ export async function guardarCategoria(estadoPrevio, fd) {
   const categoria = {
     nombre,
     identificador_url: crearIdentificador(texto(fd, "identificador_url") || nombre),
-    icono: textoOpcional(fd, "icono"),
+    icono: texto(fd, "icono"),
     activo: casilla(fd, "activo"),
   };
 
@@ -157,12 +157,13 @@ export async function guardarGuia(estadoPrevio, fd) {
 
   const guia = {
     titulo: texto(fd, "titulo"),
-    descripcion: textoOpcional(fd, "descripcion"),
-    nivel: textoOpcional(fd, "nivel"),
-    emoji: textoOpcional(fd, "emoji"),
+    descripcion: texto(fd, "descripcion"),
+    nivel: texto(fd, "nivel"),
+    emoji: texto(fd, "emoji"),
     publicada: casilla(fd, "publicada"),
   };
   if (!guia.titulo) return { error: "El título es obligatorio." };
+  if (!guia.descripcion) return { error: "La descripción es obligatoria." };
 
   const { error } = id
     ? await supabase.from("guias").update(guia).eq("id", id)

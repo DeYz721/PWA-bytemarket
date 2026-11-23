@@ -1,13 +1,20 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, startTransition } from "react";
 import { iniciarSesion } from "./acciones";
 
 export function FormularioLogin({ errorInicial }) {
   const [estado, accion, enviando] = useActionState(iniciarSesion, { error: errorInicial });
 
+  // onSubmit en lugar de action para no borrar el correo si la contraseña es incorrecta
+  function alEnviar(evento) {
+    evento.preventDefault();
+    const datos = new FormData(evento.currentTarget);
+    startTransition(() => accion(datos));
+  }
+
   return (
-    <form action={accion} className="space-y-4">
+    <form onSubmit={alEnviar} className="space-y-4">
       <label className="block text-sm font-medium">
         Correo
         <input

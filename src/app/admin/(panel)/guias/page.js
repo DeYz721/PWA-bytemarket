@@ -58,7 +58,7 @@ export default async function GuiasAdminPage({ searchParams }) {
           cancelarHref={editando ? "/admin/guias" : undefined}
         >
           <Campo etiqueta="Título *" name="titulo" required defaultValue={editando?.titulo} />
-          <AreaTexto etiqueta="Descripción" name="descripcion" defaultValue={editando?.descripcion ?? ""} />
+          <AreaTexto etiqueta="Descripción *" name="descripcion" required defaultValue={editando?.descripcion ?? ""} />
           <div className="grid grid-cols-2 gap-3">
             <Seleccion etiqueta="Nivel" name="nivel" defaultValue={editando?.nivel ?? "Principiante"}>
               {niveles.map((n) => <option key={n}>{n}</option>)}

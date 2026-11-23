@@ -49,6 +49,17 @@ const { data, error } = await supabase.from('productos').select('id, nombre, pre
 if (error) throw error;
 ```
 
+## Panel de administración
+
+Entra en http://localhost:3000/admin con una cuenta de administrador. Desde ahí se
+pueden crear, editar y borrar productos, categorías, promociones y guías; los
+cambios se ven de inmediato en la tienda.
+
+Las cuentas de administrador se crean en Supabase (Authentication → Users → Add
+user) y se les asigna `rol = 'admin'` en la tabla `perfiles`. Solo esas cuentas
+pueden entrar al panel; la seguridad la aplican también las reglas RLS de la base
+de datos.
+
 ## Carpetas
 
 ```

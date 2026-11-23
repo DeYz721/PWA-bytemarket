@@ -1,7 +1,10 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { connection } from 'next/server';
 
 export async function createClient() {
+  // Los datos de Supabase se leen en cada petición, nunca durante el prerender
+  await connection();
   const cookieStore = await cookies();
 
   return createServerClient(

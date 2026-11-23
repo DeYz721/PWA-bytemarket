@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
-import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 // Devuelve el cliente de Supabase si hay un administrador con sesión iniciada.
 // Si no, manda a la página de inicio de sesión.
 export async function requireAdmin() {
-  await connection(); // siempre se evalúa en cada petición, nunca en el prerender
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/admin/login");

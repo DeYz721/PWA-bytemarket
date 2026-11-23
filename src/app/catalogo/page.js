@@ -1,8 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-
-const formatoPrecio = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" });
+import { formatoPrecio } from "@/lib/formato";
 
 export default function CatalogoPage({ searchParams }) {
   return (

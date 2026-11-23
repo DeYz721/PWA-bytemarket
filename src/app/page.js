@@ -1,25 +1,10 @@
 
+import { Suspense } from "react";
 import Link from "next/link";
-import {
-  Cpu, Monitor, MemoryStick, HardDrive,
-  Zap, PcCase, ArrowRight, ShoppingCart
-} from "lucide-react";
-
-const categorias = [
-  { nombre: "Procesadores", icono: Cpu, href: "procesadores" },
-  { nombre: "Tarjetas Gráficas", icono: Monitor, href: "gpu" },
-  { nombre: "Memorias RAM", icono: MemoryStick, href: "ram" },
-  { nombre: "Almacenamiento", icono: HardDrive, href: "almacenamiento" },
-  { nombre: "Fuentes de Poder", icono: Zap, href: "fuentes" },
-  { nombre: "Gabinetes", icono: PcCase, href: "gabinetes" },
-];
-
-const productos = [
-  { id: 1, nombre: "RTX 4070 Super", precio: "$9,499", icono: Monitor },
-  { id: 2, nombre: "Ryzen 7 7800X3D", precio: "$6,299", icono: Cpu },
-  { id: 3, nombre: "Kingston Fury 32GB", precio: "$1,899", icono: MemoryStick },
-  { id: 4, nombre: "Samsung 990 Pro 2TB", precio: "$3,199", icono: HardDrive },
-];
+import { Cpu, ArrowRight, ShoppingCart } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { formatoPrecio } from "@/lib/formato";
+import { iconoCategoria } from "@/lib/iconosCategoria";
 
 export default function HomePage() {
   return (
@@ -68,27 +53,9 @@ export default function HomePage() {
           Explora por categoría
         </h2>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-          {categorias.map((cat) => {
-            const Icono = cat.icono;
-            return (
-              <Link
-                key={cat.nombre}
-                href={`/catalogo?cat=${cat.href}`}
-                className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition hover:-translate-y-1 hover:border-emerald-500 hover:shadow-lg"
-              >
-                <Icono
-                  size={32}
-                  strokeWidth={1.5}
-                  className="mx-auto mb-4 text-emerald-400"
-                />
-                <p className="text-sm font-semibold">
-                  {cat.nombre}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
+        <Suspense fallback={<CargandoTarjetas cantidad={7} alto="h-28" />}>
+          <Categorias />
+        </Suspense>
       </section>
 
       {/* Productos destacados */}
@@ -98,36 +65,9 @@ export default function HomePage() {
             Productos destacados
           </h2>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {productos.map((prod) => {
-              const Icono = prod.icono;
-              return (
-                <Link
-                  key={prod.id}
-                  href={`/producto?id=${prod.id}`}
-                  className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-emerald-500 hover:shadow-lg"
-                >
-                  <div className="flex h-40 items-center justify-center bg-zinc-800">
-                    <Icono
-                      size={65}
-                      strokeWidth={1}
-                      className="text-emerald-400 transition group-hover:scale-110"
-                    />
-                  </div>
-
-                  <div className="p-5">
-                    <h3 className="font-semibold">{prod.nombre}</h3>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xl font-bold text-emerald-400">
-                        {prod.precio}
-                      </span>
-                      <ShoppingCart size={19} className="text-gray-400" />
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+          <Suspense fallback={<CargandoTarjetas cantidad={4} alto="h-64" />}>
+            <ProductosDestacados />
+          </Suspense>
 
           <div className="mt-8 text-center">
             <Link
@@ -167,6 +107,99 @@ export default function HomePage() {
         </div>
       </section>
 
+    </div>
+  );
+}
+
+// Categorías activas desde Supabase
+async function Categorias() {
+  const supabase = await createClient();
+  const { data: categorias } = await supabase
+    .from("categorias")
+    .select("nombre, identificador_url")
+    .eq("activo", true)
+    .order("nombre");
+
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+      {(categorias ?? []).map((cat) => {
+        const Icono = iconoCategoria(cat.identificador_url);
+        return (
+          <Link
+            key={cat.identificador_url}
+            href={`/catalogo?cat=${cat.identificador_url}`}
+            className="group rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center transition hover:-translate-y-1 hover:border-emerald-500 hover:shadow-lg"
+          >
+            <Icono
+              size={32}
+              strokeWidth={1.5}
+              className="mx-auto mb-4 text-emerald-400"
+            />
+            <p className="text-sm font-semibold">
+              {cat.nombre}
+            </p>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+// Productos marcados como destacados en Supabase
+async function ProductosDestacados() {
+  const supabase = await createClient();
+  const { data: productos, error } = await supabase
+    .from("productos")
+    .select("id, nombre, precio, categorias(identificador_url)")
+    .eq("activo", true)
+    .eq("destacado", true)
+    .order("nombre")
+    .limit(4);
+
+  if (error) {
+    return <p className="text-center text-red-400">No se pudieron cargar los productos destacados.</p>;
+  }
+
+  return (
+    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {productos.map((prod) => {
+        const Icono = iconoCategoria(prod.categorias?.identificador_url);
+        return (
+          <Link
+            key={prod.id}
+            href={`/producto?id=${prod.id}`}
+            className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-emerald-500 hover:shadow-lg"
+          >
+            <div className="flex h-40 items-center justify-center bg-zinc-800">
+              <Icono
+                size={65}
+                strokeWidth={1}
+                className="text-emerald-400 transition group-hover:scale-110"
+              />
+            </div>
+
+            <div className="p-5">
+              <h3 className="font-semibold">{prod.nombre}</h3>
+              <div className="mt-4 flex items-center justify-between">
+                <span className="text-xl font-bold text-emerald-400">
+                  {formatoPrecio.format(prod.precio)}
+                </span>
+                <ShoppingCart size={19} className="text-gray-400" />
+              </div>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function CargandoTarjetas({ cantidad, alto }) {
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {Array.from({ length: cantidad }, (_, i) => (
+        <div key={i} className={`animate-pulse rounded-xl bg-zinc-900 ${alto}`} />
+      ))}
     </div>
   );
 }

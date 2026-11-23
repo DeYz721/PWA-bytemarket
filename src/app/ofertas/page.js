@@ -1,11 +1,7 @@
+import { Suspense } from "react";
 import Link from "next/link";
-
-const ofertas = [
-  { id: 1, nombre: "RTX 4060 Ti", antes: "$8,499", ahora: "$7,299", descuento: "-14%", img: "🎮" },
-  { id: 2, nombre: "Ryzen 5 7600X", antes: "$4,199", ahora: "$3,499", descuento: "-17%", img: "🧠" },
-  { id: 3, nombre: "Corsair 32GB DDR5", antes: "$2,299", ahora: "$1,799", descuento: "-22%", img: "💾" },
-  { id: 4, nombre: "WD Black SN850X 1TB", antes: "$2,499", ahora: "$1,999", descuento: "-20%", img: "💿" },
-];
+import { createClient } from "@/lib/supabase/server";
+import { formatoPrecio } from "@/lib/formato";
 
 export default function OfertasPage() {
   return (
@@ -16,30 +12,71 @@ export default function OfertasPage() {
         <p className="text-red-100 text-lg">Descuentos exclusivos en componentes seleccionados.</p>
       </div>
 
-      {/* Grid de ofertas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {ofertas.map((prod) => (
+      <Suspense fallback={<CargandoOfertas />}>
+        <ListaOfertas />
+      </Suspense>
+    </div>
+  );
+}
+
+// Promociones vigentes desde Supabase (las reglas RLS ya filtran las activas)
+async function ListaOfertas() {
+  const supabase = await createClient();
+  const { data: ofertas, error } = await supabase
+    .from("promociones")
+    .select("id, precio_oferta, productos(id, nombre, precio, precio_anterior, emoji)")
+    .eq("activo", true);
+
+  if (error) {
+    return <p className="rounded-lg bg-red-50 text-red-700 p-4">No se pudieron cargar las ofertas.</p>;
+  }
+
+  if (ofertas.length === 0) {
+    return <p className="text-center py-16 text-gray-400">Por ahora no hay ofertas activas.</p>;
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {ofertas.map(({ id, precio_oferta, productos: prod }) => {
+        const antes = prod.precio_anterior ?? prod.precio;
+        const descuento = Math.round((1 - precio_oferta / antes) * 100);
+        return (
           <Link
-            key={prod.id}
+            key={id}
             href={`/producto?id=${prod.id}`}
             className="group relative rounded-xl border border-gray-200 bg-white p-5 hover:shadow-lg hover:border-emerald-400 transition-all"
           >
             {/* Badge descuento */}
-            <span className="absolute top-3 right-3 rounded-full bg-red-500 text-white text-xs font-bold px-2 py-0.5">
-              {prod.descuento}
-            </span>
+            {descuento > 0 && (
+              <span className="absolute top-3 right-3 rounded-full bg-red-500 text-white text-xs font-bold px-2 py-0.5">
+                -{descuento}%
+              </span>
+            )}
 
             <div className="flex items-center justify-center h-28 bg-gray-50 rounded-lg text-5xl mb-4 group-hover:bg-emerald-50 transition-colors">
-              {prod.img}
+              {prod.emoji}
             </div>
             <h3 className="font-semibold text-gray-900">{prod.nombre}</h3>
             <div className="flex items-center gap-2 mt-2">
-              <span className="text-lg font-bold text-emerald-700">{prod.ahora}</span>
-              <span className="text-sm text-gray-400 line-through">{prod.antes}</span>
+              <span className="text-lg font-bold text-emerald-700">{formatoPrecio.format(precio_oferta)}</span>
+              {antes > precio_oferta && (
+                <span className="text-sm text-gray-400 line-through">{formatoPrecio.format(antes)}</span>
+              )}
             </div>
           </Link>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
+
+function CargandoOfertas() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {Array.from({ length: 4 }, (_, i) => (
+        <div key={i} className="animate-pulse h-52 rounded-xl bg-gray-100" />
+      ))}
+    </div>
+  );
+}
+

@@ -1,17 +1,10 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { Cpu, ArrowRight, Wrench } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ConfiguradorInteractivo } from "@/components/ConfiguradorInteractivo";
 
-export default async function ConfiguradorPage() {
-  const supabase = await createClient();
-  const { data: productos, error } = await supabase
-    .from("productos")
-    .select("id, nombre, descripcion, precio, existencias, emoji, especificaciones, compatibilidad, categorias(nombre, identificador_url)")
-    .eq("activo", true)
-    .gt("existencias", 0)
-    .order("nombre");
-
+export default function ConfiguradorPage() {
   return (
     <div className="bg-black text-white">
       <section
@@ -40,13 +33,9 @@ export default async function ConfiguradorPage() {
           </div>
         </div>
 
-        {error ? (
-          <div className="rounded-xl border border-red-900 bg-red-950/50 p-6 text-red-200">
-            No se pudieron cargar los componentes de Supabase. Intenta recargar la página.
-          </div>
-        ) : (
-          <ConfiguradorInteractivo productos={productos ?? []} />
-        )}
+        <Suspense fallback={<CargandoConfigurador />}>
+          <Componentes />
+        </Suspense>
       </section>
 
       <section className="border-t border-zinc-900 bg-zinc-950 px-6 py-12">
@@ -61,6 +50,37 @@ export default async function ConfiguradorPage() {
           </Link>
         </div>
       </section>
+    </div>
+  );
+}
+
+// Componentes disponibles desde Supabase; va dentro de <Suspense> porque lee cookies de sesión
+async function Componentes() {
+  const supabase = await createClient();
+  const { data: productos, error } = await supabase
+    .from("productos")
+    .select("id, nombre, descripcion, precio, existencias, emoji, especificaciones, compatibilidad, categorias(nombre, identificador_url)")
+    .eq("activo", true)
+    .gt("existencias", 0)
+    .order("nombre");
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-red-900 bg-red-950/50 p-6 text-red-200">
+        No se pudieron cargar los componentes de Supabase. Intenta recargar la página.
+      </div>
+    );
+  }
+
+  return <ConfiguradorInteractivo productos={productos ?? []} />;
+}
+
+function CargandoConfigurador() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="h-28 animate-pulse rounded-xl bg-zinc-900" />
+      ))}
     </div>
   );
 }

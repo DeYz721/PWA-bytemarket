@@ -1,70 +1,66 @@
-const slots = [
-  { label: "Procesador (CPU)", seleccion: null, emoji: "🧠" },
-  { label: "Tarjeta Gráfica (GPU)", seleccion: null, emoji: "🎮" },
-  { label: "Memoria RAM", seleccion: null, emoji: "💾" },
-  { label: "Almacenamiento", seleccion: null, emoji: "💿" },
-  { label: "Fuente de Poder", seleccion: null, emoji: "⚡" },
-  { label: "Tarjeta Madre", seleccion: null, emoji: "🔧" },
-  { label: "Gabinete", seleccion: null, emoji: "🖥️" },
-];
+import Link from "next/link";
+import { Cpu, ArrowRight, Wrench } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { ConfiguradorInteractivo } from "@/components/ConfiguradorInteractivo";
 
-export default function ConfiguradorPage() {
+export default async function ConfiguradorPage() {
+  const supabase = await createClient();
+  const { data: productos, error } = await supabase
+    .from("productos")
+    .select("id, nombre, descripcion, precio, existencias, emoji, especificaciones, compatibilidad, categorias(nombre, identificador_url)")
+    .eq("activo", true)
+    .gt("existencias", 0)
+    .order("nombre");
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10">
-      <h1 className="text-3xl font-bold mb-2">Configurador de PC</h1>
-      <p className="text-gray-500 mb-8">
-        Selecciona cada componente y nuestro asistente verificará la compatibilidad automáticamente.
-      </p>
+    <div className="bg-black text-white">
+      <section
+        className="relative bg-cover bg-center px-6 py-16 text-center sm:py-20"
+        style={{ backgroundImage: "url('/banner_pag1.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-900/75 to-emerald-950/50" />
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <p className="text-sm font-medium tracking-widest text-emerald-300">CONFIGURADOR BYTEMARKET</p>
+          <h1 className="mx-auto mt-4 text-4xl font-bold sm:text-5xl">Construye la PC que siempre imaginaste</h1>
+          <p className="mx-auto mt-5 max-w-2xl text-gray-200">
+            Elige componentes disponibles de nuestro catálogo y revisa el costo y la compatibilidad de tu equipo.
+          </p>
+          <Link href="/catalogo" className="mt-7 inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-semibold text-emerald-900 hover:bg-gray-100">
+            Explorar catálogo <ArrowRight size={18} />
+          </Link>
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Slots de componentes */}
-        <div className="lg:col-span-2 space-y-4">
-          {slots.map((slot) => (
-            <div
-              key={slot.label}
-              className="flex items-center gap-4 rounded-xl border border-dashed border-gray-300 bg-white p-5 hover:border-emerald-400 transition-colors"
-            >
-              <span className="text-3xl">{slot.emoji}</span>
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">{slot.label}</h3>
-                <p className="text-sm text-gray-400">Sin seleccionar</p>
-              </div>
-              <button className="rounded-lg bg-emerald-700 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-800 transition-colors">
-                Elegir
-              </button>
-            </div>
-          ))}
+      <section className="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="rounded-xl bg-emerald-900/60 p-3 text-emerald-300"><Wrench size={25} /></div>
+          <div>
+            <h2 className="text-2xl font-bold sm:text-3xl">Arma tu equipo</h2>
+            <p className="mt-1 text-sm text-zinc-400">Selecciona una pieza por categoría. Puedes cambiar tus elecciones cuando quieras.</p>
+          </div>
         </div>
 
-        {/* Resumen */}
-        <aside className="rounded-xl border border-gray-200 bg-white p-6 h-fit sticky top-24">
-          <h2 className="text-lg font-bold mb-4">Resumen</h2>
-
-          <div className="space-y-3 text-sm text-gray-500 mb-6">
-            <p>0 de {slots.length} componentes seleccionados</p>
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div className="bg-emerald-600 h-2 rounded-full" style={{ width: "0%" }} />
-            </div>
+        {error ? (
+          <div className="rounded-xl border border-red-900 bg-red-950/50 p-6 text-red-200">
+            No se pudieron cargar los componentes de Supabase. Intenta recargar la página.
           </div>
+        ) : (
+          <ConfiguradorInteractivo productos={productos ?? []} />
+        )}
+      </section>
 
-          {/* Estado de compatibilidad */}
-          <div className="rounded-lg bg-gray-50 p-4 text-center text-sm text-gray-400 mb-6">
-            Selecciona componentes para verificar compatibilidad
+      <section className="border-t border-zinc-900 bg-zinc-950 px-6 py-12">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+          <Cpu size={34} className="text-emerald-400" />
+          <div className="flex-1">
+            <h2 className="text-xl font-bold">¿Buscas una pieza específica?</h2>
+            <p className="mt-1 text-zinc-400">Revisa el catálogo completo de componentes ByteMarket.</p>
           </div>
-
-          <div className="border-t border-gray-100 pt-4 flex justify-between items-center mb-4">
-            <span className="font-semibold">Total estimado:</span>
-            <span className="text-xl font-extrabold text-emerald-700">$0.00</span>
-          </div>
-
-          <button
-            disabled
-            className="w-full rounded-lg bg-gray-300 text-gray-500 py-3 font-semibold cursor-not-allowed"
-          >
-            Agregar todo al carrito
-          </button>
-        </aside>
-      </div>
+          <Link href="/catalogo" className="rounded-lg border border-emerald-700 px-5 py-3 font-semibold text-emerald-300 transition hover:bg-emerald-900/40">
+            Ver catálogo
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

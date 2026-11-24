@@ -1,4 +1,4 @@
-import { Cpu, Monitor, MemoryStick, HardDrive, Zap, PcCase, CircuitBoard, Package } from "lucide-react";
+import { Cpu, Monitor, MemoryStick, HardDrive, Zap, PcCase, CircuitBoard, Fan, Package } from "lucide-react";
 
 // Ícono de Lucide para cada categoría, según su identificador_url en Supabase
 const iconos = {
@@ -9,6 +9,7 @@ const iconos = {
   fuentes: Zap,
   gabinetes: PcCase,
   "tarjetas-madre": CircuitBoard,
+  enfriamiento: Fan,
 };
 
 export function iconoCategoria(identificador) {

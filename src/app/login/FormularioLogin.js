@@ -3,8 +3,8 @@
 import { useActionState, startTransition } from "react";
 import { iniciarSesion } from "./acciones";
 
-export function FormularioLogin({ errorInicial }) {
-  const [estado, accion, enviando] = useActionState(iniciarSesion, { error: errorInicial });
+export function FormularioLogin() {
+  const [estado, accion, enviando] = useActionState(iniciarSesion, null);
 
   // onSubmit evita que se borre el correo si la contraseña es incorrecta.
   // action queda como respaldo: si la página aún no termina de cargar, el formulario

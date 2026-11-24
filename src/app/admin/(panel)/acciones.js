@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { requireAdmin, mensajeError, crearIdentificador } from "@/lib/admin";
 
 // ---------- utilidades ----------
@@ -29,14 +28,6 @@ function leerEspecificaciones(valor) {
 // Actualiza las páginas públicas después de un cambio
 function refrescarSitio() {
   revalidatePath("/", "layout");
-}
-
-// ---------- sesión ----------
-
-export async function cerrarSesion() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/admin/login");
 }
 
 // ---------- productos ----------

@@ -27,9 +27,9 @@ export async function updateSession(request) {
   // El panel de administración exige sesión: sin ella, se manda al login.
   // (Que la cuenta sea de administrador se revisa dentro del panel.)
   const { pathname } = request.nextUrl;
-  if (!data?.claims && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  if (!data?.claims && pathname.startsWith('/admin')) {
     const url = request.nextUrl.clone();
-    url.pathname = '/admin/login';
+    url.pathname = '/login';
     url.search = '';
     return NextResponse.redirect(url);
   }

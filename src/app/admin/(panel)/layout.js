@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { requireAdmin } from "@/lib/admin";
 import { NavAdmin } from "@/components/admin/NavAdmin";
-import { cerrarSesion } from "./acciones";
+import { cerrarSesion } from "@/app/login/acciones";
 
 // Todo lo que está dentro de (panel) exige un administrador con sesión iniciada
 export default function PanelLayout({ children }) {

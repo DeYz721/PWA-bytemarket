@@ -6,13 +6,11 @@ import { createClient } from "@/lib/supabase/server";
 export async function requireAdmin() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
+  if (!user) redirect("/login");
 
+  // Un cliente con sesión no puede entrar al panel: se le regresa a la tienda
   const { data: esAdmin } = await supabase.rpc("is_admin");
-  if (!esAdmin) {
-    await supabase.auth.signOut();
-    redirect("/admin/login?error=no-admin");
-  }
+  if (!esAdmin) redirect("/");
 
   return { supabase, user };
 }

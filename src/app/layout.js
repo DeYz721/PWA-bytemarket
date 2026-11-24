@@ -2,7 +2,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
-import { UserRound, ShieldCheck } from "lucide-react";
+import { Suspense } from "react";
+import { LogIn } from "lucide-react";
+import { MenuUsuario } from "@/components/MenuUsuario";
 import { CartProvider } from "@/components/carrito/CartProvider";
 import { CartBadge } from "@/components/carrito/CartBadge";
 import "./globals.css";
@@ -83,21 +85,9 @@ export default function RootLayout({ children }) {
 
               <CartBadge />
 
-              <Link
-                href="/perfil"
-                className="hover:text-emerald-200 transition-colors"
-                aria-label="Perfil"
-              >
-                <UserRound size={21} strokeWidth={1.8} />
-              </Link>
-
-              <Link
-                href="/admin"
-                className="hidden md:flex items-center gap-2 rounded-md bg-emerald-900 px-3 py-2 text-xs font-semibold hover:bg-emerald-800 transition-colors"
-              >
-                <ShieldCheck size={16} strokeWidth={1.8} />
-                Admin
-              </Link>
+              <Suspense fallback={<LogIn size={19} strokeWidth={1.8} className="opacity-50" />}>
+                <MenuUsuario />
+              </Suspense>
 
             </div>
           </nav>
@@ -108,7 +98,6 @@ export default function RootLayout({ children }) {
             <Link href="/configurador" className="hover:text-emerald-200">Configurador</Link>
             <Link href="/ofertas" className="hover:text-emerald-200">Ofertas</Link>
             <Link href="/guias" className="hover:text-emerald-200">Guías</Link>
-            <Link href="/admin" className="hover:text-emerald-200">Admin</Link>
           </div>
         </header>
 

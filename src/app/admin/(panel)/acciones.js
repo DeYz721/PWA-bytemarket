@@ -7,7 +7,8 @@ import { requireAdmin, mensajeError, crearIdentificador } from "@/lib/admin";
 
 // ---------- utilidades ----------
 
-const texto = (fd, campo) => String(fd.get(campo) ?? "").trim();
+// Los navegadores mandan los saltos de línea como \r\n: se guardan como \n
+const texto = (fd, campo) => String(fd.get(campo) ?? "").replace(/\r\n/g, "\n").trim();
 const textoOpcional = (fd, campo) => texto(fd, campo) || null;
 const numeroOpcional = (fd, campo) => (texto(fd, campo) === "" ? null : Number(texto(fd, campo)));
 const casilla = (fd, campo) => fd.get(campo) === "on";
@@ -169,6 +170,7 @@ export async function guardarGuia(estadoPrevio, fd) {
     descripcion: texto(fd, "descripcion"),
     nivel: texto(fd, "nivel"),
     emoji: texto(fd, "emoji"),
+    contenido: texto(fd, "contenido"),
     publicada: casilla(fd, "publicada"),
   };
   if (!guia.titulo) return { error: "El título es obligatorio." };

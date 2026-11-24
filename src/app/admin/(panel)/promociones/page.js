@@ -9,6 +9,9 @@ import { guardarPromocion, borrarPromocion } from "../acciones";
 const fecha = (iso) => (iso ? new Date(iso).toLocaleDateString("es-MX") : "Sin fin");
 const paraInput = (iso) => (iso ? iso.slice(0, 10) : "");
 
+// El panel depende de la sesión del administrador: puede esperar al servidor al navegar
+export const instant = false;
+
 export default async function PromocionesAdminPage({ searchParams }) {
   const { editar } = await searchParams;
   const { supabase } = await requireAdmin();

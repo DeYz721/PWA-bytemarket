@@ -5,6 +5,9 @@ import { BotonBorrar } from "@/components/admin/BotonBorrar";
 import { Campo, Casilla } from "@/components/admin/Campos";
 import { guardarCategoria, borrarCategoria } from "../acciones";
 
+// El panel depende de la sesión del administrador: puede esperar al servidor al navegar
+export const instant = false;
+
 export default async function CategoriasAdminPage({ searchParams }) {
   const { editar } = await searchParams;
   const { supabase } = await requireAdmin();

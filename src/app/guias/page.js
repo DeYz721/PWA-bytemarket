@@ -1,5 +1,8 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import { Clock } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { minutosLectura } from "@/components/TextoConFormato";
 
 export default function GuiasPage() {
   return (
@@ -21,7 +24,7 @@ async function ListaGuias() {
   const supabase = await createClient();
   const { data: guias, error } = await supabase
     .from("guias")
-    .select("id, titulo, descripcion, nivel, emoji")
+    .select("id, titulo, descripcion, nivel, emoji, contenido")
     .eq("publicada", true)
     .order("titulo");
 
@@ -32,19 +35,28 @@ async function ListaGuias() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {guias.map((guia) => (
-        <article
+        <Link
           key={guia.id}
-          className="flex gap-4 rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md hover:border-emerald-400 transition-all cursor-pointer"
+          href={`/guias/${guia.id}`}
+          className="group flex gap-4 rounded-xl border border-gray-200 bg-white p-6 hover:shadow-md hover:border-emerald-400 transition-all"
         >
           <span className="text-4xl mt-1">{guia.emoji}</span>
           <div>
-            <span className="inline-block rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-0.5 mb-2">
-              {guia.nivel}
-            </span>
-            <h2 className="text-lg font-semibold text-gray-900">{guia.titulo}</h2>
+            <div className="mb-2 flex items-center gap-3">
+              <span className="inline-block rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-0.5">
+                {guia.nivel}
+              </span>
+              {guia.contenido && (
+                <span className="inline-flex items-center gap-1 text-xs text-gray-400">
+                  <Clock size={13} /> {minutosLectura(guia.contenido)} min
+                </span>
+              )}
+            </div>
+            <h2 className="text-lg font-semibold text-gray-900 group-hover:text-emerald-700">{guia.titulo}</h2>
             <p className="text-sm text-gray-500 mt-1">{guia.descripcion}</p>
+            <span className="mt-3 inline-block text-sm font-semibold text-emerald-700">Leer guía →</span>
           </div>
-        </article>
+        </Link>
       ))}
     </div>
   );

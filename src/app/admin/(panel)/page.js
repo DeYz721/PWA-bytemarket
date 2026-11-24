@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Package, Tags, BadgePercent, BookOpen, ShoppingBag } from "lucide-react";
 import { requireAdmin } from "@/lib/admin";
 
+// El panel depende de la sesión del administrador: puede esperar al servidor al navegar
+export const instant = false;
+
 export default async function AdminPage() {
   const { supabase } = await requireAdmin();
 

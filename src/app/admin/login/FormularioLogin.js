@@ -6,7 +6,9 @@ import { iniciarSesion } from "./acciones";
 export function FormularioLogin({ errorInicial }) {
   const [estado, accion, enviando] = useActionState(iniciarSesion, { error: errorInicial });
 
-  // onSubmit en lugar de action para no borrar el correo si la contraseña es incorrecta
+  // onSubmit evita que se borre el correo si la contraseña es incorrecta.
+  // action queda como respaldo: si la página aún no termina de cargar, el formulario
+  // se envía por POST al servidor (nunca con la contraseña en la URL).
   function alEnviar(evento) {
     evento.preventDefault();
     const datos = new FormData(evento.currentTarget);
@@ -14,7 +16,7 @@ export function FormularioLogin({ errorInicial }) {
   }
 
   return (
-    <form onSubmit={alEnviar} className="space-y-4">
+    <form action={accion} onSubmit={alEnviar} className="space-y-4">
       <label className="block text-sm font-medium">
         Correo
         <input

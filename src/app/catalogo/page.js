@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 
 export default function CatalogoPage({ searchParams }) {
   return (
@@ -30,7 +31,7 @@ async function ListaProductos({ searchParams }) {
 
   let consulta = supabase
     .from("productos")
-    .select("id, nombre, precio, precio_anterior, existencias, emoji, categorias!inner(nombre, identificador_url)")
+    .select("id, nombre, precio, precio_anterior, existencias, emoji, url_imagen, categorias!inner(nombre, identificador_url)")
     .eq("activo", true)
     .order("nombre");
 
@@ -74,7 +75,7 @@ async function ListaProductos({ searchParams }) {
             className="group rounded-xl border border-gray-200 bg-white p-5 hover:shadow-lg hover:border-emerald-400 transition-all"
           >
             <div className="flex items-center justify-center h-28 bg-gray-50 rounded-lg text-5xl mb-4 group-hover:bg-emerald-50 transition-colors">
-              {prod.emoji}
+              <ImagenProducto producto={prod} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw">{prod.emoji}</ImagenProducto>
             </div>
             <span className="text-xs font-medium text-emerald-600 uppercase">{prod.categorias.nombre}</span>
             <h3 className="font-semibold text-gray-900 mt-1">{prod.nombre}</h3>

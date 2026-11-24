@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 import { iconoCategoria } from "@/lib/iconosCategoria";
 import { AddToCartButton } from "@/components/carrito/AddToCartButton";
 
@@ -67,8 +68,10 @@ async function DetalleProducto({ searchParams }) {
       </section>
 
       <section className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-12 sm:py-16 lg:grid-cols-2">
-        <div className="flex min-h-80 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
-          <IconoCategoria size={104} strokeWidth={1} className="text-emerald-400" />
+        <div className="flex h-80 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 lg:h-[28rem]">
+          <ImagenProducto producto={producto} sizes="(min-width: 1024px) 50vw, 100vw" className="p-6">
+            <IconoCategoria size={104} strokeWidth={1} className="text-emerald-400" />
+          </ImagenProducto>
         </div>
 
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8">

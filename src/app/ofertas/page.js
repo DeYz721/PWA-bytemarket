@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 
 export default function OfertasPage() {
   return (
@@ -24,7 +25,7 @@ async function ListaOfertas() {
   const supabase = await createClient();
   const { data: ofertas, error } = await supabase
     .from("promociones")
-    .select("id, precio_oferta, productos(id, nombre, precio, precio_anterior, emoji)")
+    .select("id, precio_oferta, productos(id, nombre, precio, precio_anterior, emoji, url_imagen)")
     .eq("activo", true);
 
   if (error) {
@@ -48,13 +49,13 @@ async function ListaOfertas() {
           >
             {/* Badge descuento */}
             {descuento > 0 && (
-              <span className="absolute top-3 right-3 rounded-full bg-red-500 text-white text-xs font-bold px-2 py-0.5">
+              <span className="absolute top-3 right-3 z-10 rounded-full bg-red-500 text-white text-xs font-bold px-2 py-0.5">
                 -{descuento}%
               </span>
             )}
 
             <div className="flex items-center justify-center h-28 bg-gray-50 rounded-lg text-5xl mb-4 group-hover:bg-emerald-50 transition-colors">
-              {prod.emoji}
+              <ImagenProducto producto={prod} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw">{prod.emoji}</ImagenProducto>
             </div>
             <h3 className="font-semibold text-gray-900">{prod.nombre}</h3>
             <div className="flex items-center gap-2 mt-2">

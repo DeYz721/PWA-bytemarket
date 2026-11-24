@@ -5,6 +5,7 @@ import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { useCart } from "@/components/carrito/CartProvider";
 import { iconoCategoria } from "@/lib/iconosCategoria";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 
 export default function CarritoPage() {
   const { items, cargando, error, subtotal, cantidadTotal, cambiarCantidad, quitar } = useCart();
@@ -34,7 +35,9 @@ export default function CarritoPage() {
             return (
               <article key={producto.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4 sm:flex-nowrap sm:p-5">
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-emerald-400">
-                  <IconoCategoria size={34} strokeWidth={1.5} />
+                  <ImagenProducto producto={producto} sizes="64px" className="p-1">
+                    <IconoCategoria size={34} strokeWidth={1.5} />
+                  </ImagenProducto>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium uppercase tracking-wide text-emerald-400">{producto.categorias?.nombre ?? "Componente"}</p>

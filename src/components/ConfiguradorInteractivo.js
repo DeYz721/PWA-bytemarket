@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, CircleAlert, RotateCcw, ShoppingBag } from "lucide-react";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 import { iconoCategoria } from "@/lib/iconosCategoria";
 
 const slots = [
@@ -101,7 +102,13 @@ export function ConfiguradorInteractivo({ productos }) {
             <section key={slot.tipo} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-emerald-700 sm:p-6">
               <div className="flex items-start gap-4">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-emerald-400">
-                  <IconoCategoria size={26} strokeWidth={1.7} />
+                  {producto ? (
+                    <ImagenProducto producto={producto} sizes="48px" className="p-1">
+                      <IconoCategoria size={26} strokeWidth={1.7} />
+                    </ImagenProducto>
+                  ) : (
+                    <IconoCategoria size={26} strokeWidth={1.7} />
+                  )}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

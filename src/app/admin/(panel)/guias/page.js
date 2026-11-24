@@ -7,18 +7,21 @@ import { guardarGuia, borrarGuia } from "../acciones";
 
 const niveles = ["Principiante", "Intermedio", "Avanzado"];
 
+// El panel depende de la sesión del administrador: puede esperar al servidor al navegar
+export const instant = false;
+
 export default async function GuiasAdminPage({ searchParams }) {
   const { editar } = await searchParams;
   const { supabase } = await requireAdmin();
   const { data: guias } = await supabase
     .from("guias")
-    .select("id, titulo, descripcion, nivel, emoji, publicada")
+    .select("id, titulo, descripcion, nivel, emoji, contenido, publicada")
     .order("titulo");
 
   const editando = (guias ?? []).find((g) => g.id === editar);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+    <div className="space-y-10">
       <div>
         <h1 className="mb-6 text-2xl font-bold">Guías</h1>
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
@@ -27,6 +30,7 @@ export default async function GuiasAdminPage({ searchParams }) {
               <tr>
                 <th className="px-4 py-3">Guía</th>
                 <th className="px-4 py-3">Nivel</th>
+                <th className="px-4 py-3">Tutorial</th>
                 <th className="px-4 py-3 text-right">Acciones</th>
               </tr>
             </thead>
@@ -38,8 +42,9 @@ export default async function GuiasAdminPage({ searchParams }) {
                     {!g.publicada && <span className="ml-2 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">Borrador</span>}
                   </td>
                   <td className="px-4 py-3 text-gray-500">{g.nivel}</td>
+                  <td className="px-4 py-3 text-gray-500">{g.contenido ? `${g.contenido.trim().split(/\s+/).length} palabras` : "Sin contenido"}</td>
                   <td className="space-x-4 px-4 py-3 text-right">
-                    <Link href={`/admin/guias?editar=${g.id}`} className="font-medium text-emerald-700 hover:underline">Editar</Link>
+                    <Link href={`/admin/guias?editar=${g.id}#formulario`} className="font-medium text-emerald-700 hover:underline">Editar</Link>
                     <BotonBorrar accion={borrarGuia} id={g.id} nombre={g.titulo} />
                   </td>
                 </tr>
@@ -50,7 +55,7 @@ export default async function GuiasAdminPage({ searchParams }) {
       </div>
 
       <div>
-        <h2 className="mb-6 text-2xl font-bold">{editando ? "Editar guía" : "Nueva guía"}</h2>
+        <h2 id="formulario" className="mb-6 text-2xl font-bold">{editando ? `Editar guía: ${editando.titulo}` : "Nueva guía"}</h2>
         <FormularioAdmin
           key={editando?.id ?? "nueva"}
           accion={guardarGuia}
@@ -65,6 +70,14 @@ export default async function GuiasAdminPage({ searchParams }) {
             </Seleccion>
             <Campo etiqueta="Emoji" name="emoji" maxLength={8} defaultValue={editando?.emoji ?? ""} />
           </div>
+          <AreaTexto
+            etiqueta="Contenido del tutorial"
+            name="contenido"
+            rows={18}
+            defaultValue={editando?.contenido ?? ""}
+            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm font-normal focus:border-emerald-500 focus:outline-none"
+            ayuda="Formato: ## Título · ### Subtítulo · - lista · 1. paso · **negritas** · > consejo destacado"
+          />
           <Casilla etiqueta="Publicada (visible en la tienda)" name="publicada" defaultChecked={editando?.publicada ?? true} />
         </FormularioAdmin>
       </div>

@@ -4,6 +4,9 @@ import { formatoPrecio } from "@/lib/formato";
 import { BotonBorrar } from "@/components/admin/BotonBorrar";
 import { borrarProducto } from "../acciones";
 
+// El panel depende de la sesión del administrador: puede esperar al servidor al navegar
+export const instant = false;
+
 export default async function ProductosAdminPage() {
   const { supabase } = await requireAdmin();
   const { data: productos, error } = await supabase

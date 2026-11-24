@@ -5,7 +5,8 @@ import { useActionState, startTransition } from "react";
 import { BotonGuardar, MensajeError } from "./Campos";
 
 // Formulario genérico del panel: envía a una acción del servidor y muestra sus errores.
-// Se envía con onSubmit (no con action) para que, si hay un error, no se borre lo escrito.
+// onSubmit evita que se borre lo escrito si hay un error; action es el respaldo
+// si el formulario se envía antes de que la página termine de cargar.
 export function FormularioAdmin({ accion, id, cancelarHref, children }) {
   const [estado, enviar, enviando] = useActionState(accion, null);
 
@@ -16,7 +17,7 @@ export function FormularioAdmin({ accion, id, cancelarHref, children }) {
   }
 
   return (
-    <form onSubmit={alEnviar} className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
+    <form action={enviar} onSubmit={alEnviar} className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
       {id && <input type="hidden" name="id" value={id} />}
       {children}
       <MensajeError estado={estado} />

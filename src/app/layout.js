@@ -2,7 +2,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, UserRound, ShieldCheck } from "lucide-react";
+import { UserRound, ShieldCheck } from "lucide-react";
+import { CartProvider } from "@/components/carrito/CartProvider";
+import { CartBadge } from "@/components/carrito/CartBadge";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -32,6 +34,7 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
+        <CartProvider>
 
         {/* Navbar */}
         <header className="sticky top-0 z-50 bg-emerald-700 text-white shadow-md">
@@ -78,16 +81,7 @@ export default function RootLayout({ children }) {
             {/* Íconos de usuario */}
             <div className="flex items-center gap-5">
 
-              <Link
-                href="/carrito"
-                className="relative hover:text-emerald-200 transition-colors"
-                aria-label="Carrito"
-              >
-                <ShoppingCart size={21} strokeWidth={1.8} />
-                <span className="absolute -top-2 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold">
-                  0
-                </span>
-              </Link>
+              <CartBadge />
 
               <Link
                 href="/perfil"
@@ -154,6 +148,7 @@ export default function RootLayout({ children }) {
             © 2026 ByteMarket.
           </div>
         </footer>
+        </CartProvider>
 
       </body>
     </html>

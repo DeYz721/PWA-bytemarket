@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatoPrecio } from "@/lib/formato";
 import { iconoCategoria } from "@/lib/iconosCategoria";
+import { AddToCartButton } from "@/components/carrito/AddToCartButton";
 
 export default function ProductoPage({ searchParams }) {
   return (
@@ -22,7 +23,7 @@ async function DetalleProducto({ searchParams }) {
   const supabase = await createClient();
   const { data: producto } = await supabase
     .from("productos")
-    .select("nombre, descripcion, precio, precio_anterior, existencias, emoji, especificaciones, categorias(nombre, identificador_url)")
+    .select("id, nombre, descripcion, precio, precio_anterior, existencias, emoji, url_imagen, especificaciones, categorias(nombre, identificador_url)")
     .eq("id", id)
     .eq("activo", true)
     .maybeSingle();
@@ -92,14 +93,7 @@ async function DetalleProducto({ searchParams }) {
             </span>
           )}
 
-          <div className="mb-8 flex gap-3">
-            <button className="flex-1 rounded-lg bg-emerald-700 py-3 font-semibold text-white transition-colors hover:bg-emerald-600">
-              Agregar al carrito
-            </button>
-            <button aria-label="Agregar a favoritos" className="rounded-lg border border-zinc-700 px-4 py-3 transition-colors hover:border-emerald-500">
-              ❤️
-            </button>
-          </div>
+          <AddToCartButton producto={producto} />
 
           {especificaciones.length > 0 && (
             <>

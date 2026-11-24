@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Cpu, ArrowRight, ShoppingCart } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { formatoPrecio } from "@/lib/formato";
+import { ImagenProducto } from "@/components/ImagenProducto";
 import { iconoCategoria } from "@/lib/iconosCategoria";
 
 export default function HomePage() {
@@ -150,7 +151,7 @@ async function ProductosDestacados() {
   const supabase = await createClient();
   const { data: productos, error } = await supabase
     .from("productos")
-    .select("id, nombre, precio, categorias(identificador_url)")
+    .select("id, nombre, precio, url_imagen, categorias(identificador_url)")
     .eq("activo", true)
     .eq("destacado", true)
     .order("nombre")
@@ -171,11 +172,13 @@ async function ProductosDestacados() {
             className="group overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition hover:border-emerald-500 hover:shadow-lg"
           >
             <div className="flex h-40 items-center justify-center bg-zinc-800">
-              <Icono
-                size={65}
-                strokeWidth={1}
-                className="text-emerald-400 transition group-hover:scale-110"
-              />
+              <ImagenProducto producto={prod} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw">
+                <Icono
+                  size={65}
+                  strokeWidth={1}
+                  className="text-emerald-400 transition group-hover:scale-110"
+                />
+              </ImagenProducto>
             </div>
 
             <div className="p-5">

@@ -59,7 +59,7 @@ async function Componentes() {
   const supabase = await createClient();
   const { data: productos, error } = await supabase
     .from("productos")
-    .select("id, nombre, descripcion, precio, existencias, emoji, especificaciones, compatibilidad, categorias(nombre, identificador_url)")
+    .select("id, nombre, descripcion, precio, existencias, emoji, url_imagen, especificaciones, compatibilidad, categorias(nombre, identificador_url)")
     .eq("activo", true)
     .gt("existencias", 0)
     .order("nombre");
